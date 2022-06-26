@@ -1,0 +1,28 @@
+html {
+  * {
+    box-sizing: border-box;
+  }
+}
+
+body {
+  background: #343434;
+  font-size: 21px;
+  font-family: Arial;
+  color: white;
+  margin: 0;
+
+  a {
+    color: #d47bd9;
+    text-decoration: none;
+
+    &:hover {
+      color: #e2aae5;
+    }
+  }
+}
+
+.wrapper {
+  max-width: 1200px;
+  margin: auto;
+  padding: 1pc;
+}

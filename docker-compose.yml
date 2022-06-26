@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  node:
+    build:
+      context: .
+      dockerfile: .docker/node/Dockerfile
+    volumes:
+      - ./:/home/app
+    networks:
+      - test-net
+    ports:
+      - "8545:8545"
+      - "3000:3000"
+    working_dir: /home/app
+    tty: true
+    dns:
+      - 8.8.8.8
+      - 8.8.2.2
+
+networks:
+  test-net:
+    external: true
