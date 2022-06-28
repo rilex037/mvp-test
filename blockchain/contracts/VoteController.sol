@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./WakandaToken.sol";
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 contract VoteController {
     address private wakandaTokenAddress;

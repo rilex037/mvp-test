@@ -25,7 +25,11 @@
     </form>
   </div>
   <h2 v-else>You Already Voted!</h2>
-  <a href="#" @click="showLeads()">Show Leads</a>
+
+  <a href="#" @click="showLeads()">{{
+    leadsHidden ? "Show Leads" : "Hide Leads"
+  }}</a>
+
   <div v-if="!leadsHidden">
     <p v-for="(l, k) in leads">
       {{ l == 0 ? "Nobody" : candidates[l - 1].name }}
@@ -104,7 +108,7 @@ export default {
           this.leads = result.toString().split(",");
         },
         (error) => {
-          alert(JSON.parse(error.body).error.message);
+          alert(error.reason);
         }
       );
     },
