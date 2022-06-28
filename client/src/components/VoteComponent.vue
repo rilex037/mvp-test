@@ -1,0 +1,113 @@
+<template>
+  <div v-if="!voter.voted">
+    <table>
+      <th></th>
+      <th>NAME</th>
+      <th>AGE</th>
+      <th>CULT</th>
+      <tr v-for="(c, k) in candidates">
+        <td><input type="radio" v-model="picked" :value="k + 1" /></td>
+        <td>{{ c.name }}</td>
+        <td>{{ c.age }}</td>
+        <td>{{ c.cult }}</td>
+      </tr>
+    </table>
+    <span v-if="picked">Vote For: {{ candidates[picked - 1].name }}</span>
+
+    <form @submit="vote">
+      <input
+        min="1"
+        type="number"
+        placeholder="Enter ammount of WKND tokens to spend..."
+        v-model="tokensToSpend"
+      />
+      <button type="submit">VOTE</button>
+    </form>
+  </div>
+  <h2 v-else>You Already Voted!</h2>
+  <a href="#" @click="showLeads()">Show Leads</a>
+  <div v-if="!leadsHidden">
+    <p v-for="(l, k) in leads">
+      {{ l == 0 ? "Nobody" : candidates[l - 1].name }}
+    </p>
+  </div>
+</template>
+
+<script>
+import { ethers } from "ethers";
+
+export default {
+  data() {
+    return {
+      tokensToSpend: 1,
+      picked: null,
+
+      candidates: {},
+      leads: [0, 0, 0],
+      leadsHidden: true,
+    };
+  },
+  props: ["voteControllerContract", "wakandaTokenContract", "voter"],
+  mounted() {
+    this.getCandidates();
+    this.getLeads();
+    /*
+    window.setInterval(() => {
+      this.getLeads();
+    }, 3000);
+    */
+  },
+  methods: {
+    getCandidates() {
+      fetch("https://wakanda-task.3327.io/list")
+        .then((response) => response.json())
+        .then((data) => (this.candidates = data.candidates));
+    },
+    async showLeads() {
+      this.leadsHidden = !this.leadsHidden;
+    },
+    async vote(e) {
+      e.preventDefault();
+      if (!this.picked) {
+        alert("Please, pick a candidate to cast a vote!");
+        return;
+      }
+      await this.wakandaTokenContract
+        .approve(
+          import.meta.env.VITE_VOTE_CONTROLLER_ADDRESS,
+          ethers.utils.parseEther(this.tokensToSpend.toString())
+        )
+        .then(
+          async (result) => {
+            console.log(result);
+          },
+          (error) => {
+            alert(error.reason);
+          }
+        );
+
+      await this.voteControllerContract
+        .vote(this.picked, this.tokensToSpend)
+        .then(
+          async (result) => {
+            this.getLeads();
+            console.log(result);
+          },
+          (error) => {
+            alert(error.reason);
+          }
+        );
+    },
+    async getLeads() {
+      await this.voteControllerContract.winningCandidates().then(
+        async (result) => {
+          this.leads = result.toString().split(",");
+        },
+        (error) => {
+          alert(JSON.parse(error.body).error.message);
+        }
+      );
+    },
+  },
+};
+</script>
