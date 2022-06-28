@@ -7,7 +7,7 @@ async function main() {
 
     // Deploy WakandaToken
     const WakandaToken = await ethers.getContractFactory("WakandaToken");
-    wakandaToken = await WakandaToken.deploy(10, deployAddresses.voteController);
+    wakandaToken = await WakandaToken.deploy(6000000, deployAddresses.voteController);
     await wakandaToken.deployed();
     console.log("WakandaToken deployed to:", wakandaToken.address);
 

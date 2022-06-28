@@ -13,7 +13,7 @@ start-containers:
 	docker network create --driver bridge test-net || true
 	docker-compose up -d
 
-# BOCKHAIN
+# BLOCKCHAIN
 run-network:
 	$(NODE_CONTAINER) "cd blockchain && npx hardhat node"
 
