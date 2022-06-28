@@ -23,7 +23,9 @@ contract VoteController {
 
     Candidate[] public candidates;
 
-    uint[] public winningCandidates = [0, 0, 0];
+    uint[] private wkArray = [0, 0, 0];
+
+    event NewChallenger(uint indexed candidateId);
 
     constructor(address wakandaToken) {
         wakandaTokenAddress = wakandaToken;
@@ -54,63 +56,62 @@ contract VoteController {
         uint256 voterBalance = WakandaToken(wakandaTokenAddress).balanceOf(address(msg.sender));
 
         require(voter[msg.sender].registered == true, "User is not registered!");
-        require(voter[msg.sender].voted != true, "User is already voted!");
+        require(voter[msg.sender].voted != true, "User already voted!");
         require(candidateId > 0 && candidateId <= 10, "Invalid candidate!");
         require(voterBalance >= formatToken(tokens), "Insufficient balance of tokens!");
 
         WakandaToken(wakandaTokenAddress).transferFrom(address(msg.sender), address(this), formatToken(tokens));
         candidates[candidateId].voteCount += tokens;
         voter[msg.sender].voted = true;
-        calculcateWinningCandidates(candidateId);
+        calculcatewkArray(candidateId);
     }
 
-    function calculcateWinningCandidates(uint candidateId) private {
+    function winningCandidates() public view returns (uint[] memory) {
+        return wkArray;
+    }
+
+    function calculcatewkArray(uint candidateId) private {
         int target = -1;
 
-        if (winningCandidates[0] == candidateId) {
+        if (wkArray[0] == candidateId) {
             target = 0;
-        } else if (winningCandidates[1] == candidateId) {
+        } else if (wkArray[1] == candidateId) {
             target = 1;
-        } else if (winningCandidates[2] == candidateId) {
+        } else if (wkArray[2] == candidateId) {
             target = 2;
         }
 
-        if (candidates[winningCandidates[0]].voteCount <= candidates[candidateId].voteCount) {
+        if (candidates[wkArray[0]].voteCount <= candidates[candidateId].voteCount) {
             if (target == -1) {
-                console.log("EVENT");
-                winningCandidates[2] = winningCandidates[1];
-                winningCandidates[1] = winningCandidates[0];
-                winningCandidates[0] = candidateId;
+                emit NewChallenger(candidateId);
+                wkArray[2] = wkArray[1];
+                wkArray[1] = wkArray[0];
+                wkArray[0] = candidateId;
             } else if (target == 1) {
-                winningCandidates[1] = winningCandidates[0];
-                winningCandidates[0] = candidateId;
+                wkArray[1] = wkArray[0];
+                wkArray[0] = candidateId;
             } else if (target == 2) {
-                winningCandidates[2] = winningCandidates[1];
-                winningCandidates[1] = winningCandidates[0];
-                winningCandidates[0] = candidateId;
+                wkArray[2] = wkArray[1];
+                wkArray[1] = wkArray[0];
+                wkArray[0] = candidateId;
             }
-        } else if (candidates[winningCandidates[1]].voteCount <= candidates[candidateId].voteCount) {
+        } else if (candidates[wkArray[1]].voteCount <= candidates[candidateId].voteCount) {
             if (target == -1) {
-                console.log("EVENT");
-                winningCandidates[2] = winningCandidates[1];
-                winningCandidates[1] = candidateId;
+                emit NewChallenger(candidateId);
+                wkArray[2] = wkArray[1];
+                wkArray[1] = candidateId;
             } else if (target == 0) {
-                winningCandidates[1] = candidateId;
+                wkArray[1] = candidateId;
             } else if (target == 2) {
-                winningCandidates[2] = winningCandidates[1];
-                winningCandidates[1] = candidateId;
+                wkArray[2] = wkArray[1];
+                wkArray[1] = candidateId;
             }
-        } else if (candidates[winningCandidates[2]].voteCount <= candidates[candidateId].voteCount) {
+        } else if (candidates[wkArray[2]].voteCount <= candidates[candidateId].voteCount) {
             if (target == -1) {
-                console.log("EVENT");
-                winningCandidates[2] = candidateId;
+                emit NewChallenger(candidateId);
+                wkArray[2] = candidateId;
             }
         }
-
-        for (uint l = 0; l < winningCandidates.length; l++) {
-            console.log(winningCandidates[l], candidates[winningCandidates[l]].voteCount);
-        }
-        console.log("<BR>");
     }
 
     function formatToken(uint256 number) private pure returns (uint256) {
