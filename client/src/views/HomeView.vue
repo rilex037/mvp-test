@@ -1,7 +1,7 @@
 <template>
   <div class="block centered">
-    <form action="">
-      <button @click="vote">VOTE NOW</button>
+    <form @submit="vote">
+      <button>VOTE NOW</button>
     </form>
   </div>
 </template>

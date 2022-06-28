@@ -25,7 +25,8 @@ body {
     margin: 0.3pc 0;
   }
 
-  input {
+  input[type="text"],
+  input[type="number"] {
     background: #242424;
     border-style: solid;
     border: 1px solid #838383;
@@ -47,9 +48,23 @@ body {
     margin: 0.5pc 0;
     cursor: pointer;
     color: white;
+    min-width: 10pc;
 
     &:focus {
       background: #906ccf;
+    }
+  }
+
+  table {
+    text-align: left;
+    border-style: none;
+    padding: 1pc;
+    margin: auto;
+
+    th,
+    td {
+      margin: 1pc;
+      padding: 0.5pc;
     }
   }
 }
