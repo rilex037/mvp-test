@@ -10,15 +10,6 @@ describe("Tests For the VoteController", function () {
 
     before(async function () {
         addrs = await ethers.getSigners();
-        //  console.log(ethers.Wallet.createRandom());
-        // console.log(addrs[10]);
-
-        /*
-        console.log(addrs.map(function(i) {
-            return i.address;
-          }));
-        */
-
         deployAddresses = await getDeployAddresses(addrs[0]);
 
         // Deploy WakandaToken
@@ -65,7 +56,7 @@ describe("Tests For the VoteController", function () {
     });
     it("Should give error if user already voted", async function () {
         await voteController.connect(addrs[0]).vote(1, 1);
-        await expect(voteController.connect(addrs[0]).vote(1, 2)).to.be.revertedWith("User is already voted!");
+        await expect(voteController.connect(addrs[0]).vote(1, 2)).to.be.revertedWith("User already voted!");
     });
     it("Should give error if user has no token balance", async function () {
         await expect(voteController.connect(addrs[1]).vote(11, 2)).to.be.revertedWith("Invalid candidate!");
@@ -79,24 +70,11 @@ describe("Tests For the VoteController", function () {
         expect(candidate.voteCount).to.equal(1);
     });
     it("Should emit wining candidates event, with candidate 5 as leader", async function () {
-        await voteController.connect(addrs[3]).vote(5, 1);
-        await voteController.connect(addrs[4]).vote(5, 1);
+        await expect(voteController.connect(addrs[4]).vote(5, 1)).to.emit(voteController, "NewChallenger").withArgs(5);
     });
-    it("Should emit wining candidates event, with candidate 6 as last", async function () {
-        await voteController.connect(addrs[5]).vote(6, 1);
-        await voteController.connect(addrs[6]).vote(6, 1);
-
-        await voteController.connect(addrs[7]).vote(6, 1);
-
-
-        await voteController.connect(addrs[8]).vote(3, 1);
-
-        await voteController.connect(addrs[9]).vote(3, 1);
-        await voteController.connect(addrs[10]).vote(3, 1);
-        await voteController.connect(addrs[11]).vote(3, 1);
-
-        await voteController.connect(addrs[12]).vote(1, 1);
-        await voteController.connect(addrs[13]).vote(1, 1);
-
+    it("Should see the id's of the top 3 winning candidates", async function () {
+        await voteController.winningCandidates().then(function (response) {
+            expect(response.toString(2)).to.equal("5,3,1");
+        });
     });
 });
