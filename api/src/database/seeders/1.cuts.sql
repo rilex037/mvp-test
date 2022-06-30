@@ -1,4 +1,4 @@
-INSERT INTO cults (id,name) VALUES
+INSERT INTO mv.cults (id,name) VALUES
 	 (1,'White Gorilla Cult'),
 	 (2,'Lion Cult'),
 	 (3,'Hyena Clan'),

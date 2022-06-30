@@ -1,11 +1,4 @@
-import {
-  Table,
-  Column,
-  Model,
-  PrimaryKey,
-  ForeignKey,
-} from "sequelize-typescript";
-import Candidates from "./candidates";
+import { Table, Column, Model, PrimaryKey } from "sequelize-typescript";
 
 @Table({
   freezeTableName: true,

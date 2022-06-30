@@ -1,16 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
 import Greeter from "../app/http/controllers/greeter";
 import CandidatesList from "../app/http/controllers/candidatesList";
+import Cors from "../app/http/middleware/cors";
 
 const v1 = Router();
 
 /**
- * Assign Middleware
+ * Assign Middlewares
  */
-v1.use("/", (req: Request, res: Response, next: NextFunction) => {
-  console.log("middleware called!");
-  return next();
-});
+v1.use("/", Cors.handle);
 
 /**
  *  Assign Controllers
