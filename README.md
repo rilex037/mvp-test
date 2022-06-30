@@ -14,3 +14,9 @@ if all dependencies are already installed then we can just run `make start-conta
 - To start local blockchain network, run `make run-network`, and leave this console tab running.
 - We deploy our smart contracts with `make deploy` command.
 - To start the font-end , run `make run-client`
+
+## Port Bindings:
+* http://localhost/ - Frontend
+* http://localhost:8545 - Local Ethereum network
+* http://localhost:8545 - API 
+ 

@@ -4,7 +4,7 @@ NODE_CONTAINER=docker-compose exec -T node sh -c
 dockerize:
 	docker-compose down
 	docker network create --driver bridge test-net || true
-	docker-compose up -d
+	docker-compose up -d --build
 	$(NODE_CONTAINER) "cd blockchain && npm install"
 	$(NODE_CONTAINER) "cd client && npm install"
 
@@ -26,3 +26,7 @@ test:
 # VUE
 run-client:
 	$(NODE_CONTAINER) "cd client && npm run dev"
+
+# API
+run-api:
+	$(NODE_CONTAINER) "cd api && npm run dev"
