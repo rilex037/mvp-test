@@ -9,6 +9,7 @@ const db = new Sequelize({
   password: Config.DB_PASSWORD,
   host: Config.DB_HOST,
   models: [__dirname + "/../app/models/*.*"],
+  schema: "mv",
   // logging: false,
 });
 

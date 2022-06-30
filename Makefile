@@ -7,6 +7,8 @@ dockerize:
 	docker-compose up -d --build
 	$(NODE_CONTAINER) "cd blockchain && npm install"
 	$(NODE_CONTAINER) "cd client && npm install"
+	$(NODE_CONTAINER) "cd api && npm install"
+	$(NODE_CONTAINER) "cd api && npm run command migrate_seed"
 
 start-containers:
 	docker-compose down

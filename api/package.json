@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
-    "build": "./node_modules/.bin/tsc  -p ."
+    "build": "./node_modules/.bin/tsc  -p .",
+    "command": "./node_modules/.bin/ts-node src/app/console/run.ts"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +14,7 @@
   "dependencies": {
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "node-cron": "^3.0.1",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.1.13",

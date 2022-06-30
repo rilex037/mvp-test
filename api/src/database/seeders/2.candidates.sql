@@ -1,4 +1,4 @@
-INSERT INTO candidates (id,name,age,cult) VALUES
+INSERT INTO mv.candidates (id,name,age,cult_id) VALUES
 	 (1,'Oneza Umbadi',56,1),
 	 (2,'K''Tashe Khotare',52,2),
 	 (3,'W''Kasse Zomvu',67,2),

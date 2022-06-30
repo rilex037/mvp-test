@@ -45,7 +45,6 @@ export default {
     return {
       tokensToSpend: 1,
       picked: null,
-
       candidates: {},
       leads: [0, 0, 0],
       leadsHidden: true,
@@ -63,7 +62,10 @@ export default {
   },
   methods: {
     getCandidates() {
-      fetch("https://wakanda-task.3327.io/list")
+      fetch(import.meta.env.VITE_APIURL + "/v1/candidates-list")
+        .catch((response) => {
+          alert("Error getting list of candidates!: " + response);
+        })
         .then((response) => response.json())
         .then((data) => (this.candidates = data.candidates));
     },
@@ -76,31 +78,33 @@ export default {
         alert("Please, pick a candidate to cast a vote!");
         return;
       }
-      await this.wakandaTokenContract
-        .approve(
+
+      // Approve a vote
+      try {
+        let tx = await this.wakandaTokenContract.approve(
           import.meta.env.VITE_VOTE_CONTROLLER_ADDRESS,
           ethers.utils.parseEther(this.tokensToSpend.toString())
-        )
-        .then(
-          async (result) => {
-            console.log(result);
-          },
-          (error) => {
+        );
+        let receipt = await tx.wait();
+        if (receipt.status) {
+          // Cast a vote
+          try {
+            let tx = await this.voteControllerContract.vote(
+              this.picked,
+              this.tokensToSpend
+            );
+            let receipt = await tx.wait();
+            if (receipt.status) {
+              alert("You voted for: " + this.candidates[this.picked - 1].name);
+              console.log(receipt);
+            }
+          } catch (error) {
             alert(error.reason);
           }
-        );
-
-      await this.voteControllerContract
-        .vote(this.picked, this.tokensToSpend)
-        .then(
-          async (result) => {
-            this.getLeads();
-            console.log(result);
-          },
-          (error) => {
-            alert(error.reason);
-          }
-        );
+        }
+      } catch (error) {
+        alert(error.reason);
+      }
     },
     async getLeads() {
       await this.voteControllerContract.winningCandidates().then(

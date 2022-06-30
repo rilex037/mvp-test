@@ -4,8 +4,6 @@ import {
   Model,
   PrimaryKey,
   BelongsTo,
-  HasMany,
-  HasOne,
   ForeignKey,
 } from "sequelize-typescript";
 import Cult from "./cult";
