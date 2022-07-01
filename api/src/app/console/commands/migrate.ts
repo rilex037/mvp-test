@@ -21,6 +21,11 @@ const migrate = async () => {
     fs.readFileSync(dir + "/migrations/2.candidates.sql", "utf8"),
     { raw: true }
   );
+
+  // Votes table
+  await db.query(fs.readFileSync(dir + "/migrations/3.votes.sql", "utf8"), {
+    raw: true,
+  });
 };
 
 export default migrate;

@@ -1,7 +1,8 @@
 import { Router, Request, Response, NextFunction } from "express";
-import Greeter from "../app/http/controllers/greeter";
-import CandidatesList from "../app/http/controllers/candidatesList";
+import GreeterController from "../app/http/controllers/greeterController";
+import CandidatesController from "../app/http/controllers/candidatesController";
 import Cors from "../app/http/middleware/cors";
+import VotesController from "../app/http/controllers/votesController";
 
 const v1 = Router();
 
@@ -13,7 +14,8 @@ v1.use("/", Cors.handle);
 /**
  *  Assign Controllers
  */
-v1.get("/", Greeter.index);
-v1.get("/candidates-list", CandidatesList.list);
+v1.get("/", GreeterController.index);
+v1.get("/candidates", CandidatesController.list);
+v1.get("/votes", VotesController.list);
 
 export default v1;

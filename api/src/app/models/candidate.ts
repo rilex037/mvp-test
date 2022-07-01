@@ -14,7 +14,7 @@ import Cult from "./cult";
   timestamps: false,
   underscored: true,
 })
-class Candidates extends Model {
+class Candidate extends Model {
   @PrimaryKey
   @Column
   id: number;
@@ -28,9 +28,10 @@ class Candidates extends Model {
 
   @ForeignKey(() => Cult)
   @Column
-  cult_id: string;
+  cult_id: number;
 
   @BelongsTo(() => Cult)
   cult: Cult;
 }
-export default Candidates;
+
+export default Candidate;

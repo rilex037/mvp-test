@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-class Greeter {
+class GreeterController {
   public static index(req: Request, res: Response) {
     res.json({ success: true });
   }
 }
-export default Greeter;
+export default GreeterController;
