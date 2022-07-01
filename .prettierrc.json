@@ -21,6 +21,17 @@
         "bracketSpacing": false,
         "explicitTypes": "preserve"
       }
+    },
+    {
+      "files": "*.vue",
+      "options": {
+        "printWidth": 120,
+        "tabWidth": 2,
+        "useTabs": false,
+        "singleQuote": false,
+        "bracketSpacing": false,
+        "explicitTypes": "preserve"
+      }
     }
   ]
 }

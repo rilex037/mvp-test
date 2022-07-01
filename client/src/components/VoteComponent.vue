@@ -15,44 +15,34 @@
     <span v-if="picked">Vote For: {{ candidates[picked - 1].name }}</span>
 
     <form @submit="vote">
-      <input
-        min="1"
-        type="number"
-        placeholder="Enter ammount of WKND tokens to spend..."
-        v-model="tokensToSpend"
-      />
+      <input min="1" type="number" placeholder="Enter ammount of WKND tokens to spend..." v-model="tokensToSpend" />
       <button type="submit">VOTE</button>
     </form>
   </div>
   <h2 v-else>You Already Voted!</h2>
 
-  <a href="#" @click="showLeads()">{{
-    leadsHidden ? "Show Leads" : "Hide Leads"
-  }}</a>
+  <a href="#" @click="showLeads()">{{ leadsHidden ? "Show Leads" : "Hide Leads" }}</a>
   <div class="leads" v-if="!leadsHidden">
     <p v-for="(l, k) in leads">
       {{ l == 0 ? "" : k + 1 + ": " + candidates[l - 1].name }}
     </p>
   </div>
-  <textarea v-if="debug" rows="4" v-model="debugContent" disabled> </textarea>
 </template>
 
 <script>
-import { ethers } from "ethers";
+import {ethers} from "ethers";
 
 export default {
   data() {
     return {
-      tokensToSpend: null,
+      tokensToSpend: 1,
       picked: null,
       candidates: {},
       leads: [0, 0, 0],
       leadsHidden: true,
-      debug: false,
-      debugContent: "debug...",
     };
   },
-  props: ["voteControllerContract", "wakandaTokenContract", "voter"],
+  props: ["voteControllerContract", "wakandaTokenContract", "address", "voter"],
   mounted() {
     this.getCandidates();
     this.getLeads();
@@ -95,10 +85,7 @@ export default {
         if (receipt.status) {
           // Cast a vote
           try {
-            let tx = await this.voteControllerContract.vote(
-              this.picked,
-              this.tokensToSpend
-            );
+            let tx = await this.voteControllerContract.vote(this.picked, this.tokensToSpend);
             let receipt = await tx.wait();
             if (receipt.status) {
               alert("You voted for: " + this.candidates[this.picked - 1].name);
