@@ -5,4 +5,5 @@ class GreeterController {
     res.json({ success: true });
   }
 }
+
 export default GreeterController;

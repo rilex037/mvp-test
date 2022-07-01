@@ -3,11 +3,11 @@
     <span v-if="voter">
       <div v-if="!voter.registered">Registering your account...</div>
       <div v-if="voter.registered">
-        <VoteComponent 
-        :voteControllerContract="voteControllerContract"
-        :wakandaTokenContract="wakandaTokenContract"
-        :voter="voter"
-         />
+        <VoteComponent
+          :voteControllerContract="voteControllerContract"
+          :wakandaTokenContract="wakandaTokenContract"
+          :voter="voter"
+        />
       </div>
     </span>
     <span v-else>Connecting to the blockchain...</span>
@@ -40,22 +40,24 @@ export default {
       wakandaTokenContract: null,
       voter: null,
       address: null,
+      signer: null,
     };
   },
 
   mounted() {
     this.address = this.cookies.get("address");
+    this.signer = this.$provider.getSigner(this.address);
 
     this.voteControllerContract = new ethers.Contract(
       import.meta.env.VITE_VOTE_CONTROLLER_ADDRESS,
       VoteControllerABI(),
-      this.$provider.getSigner(this.address)
+      this.$provider.getSigner()
     );
 
     this.wakandaTokenContract = new ethers.Contract(
       import.meta.env.VITE_WAKANDA_TOKEN_ADDRESS,
       WakandaTokenABI(),
-      this.$provider.getSigner(this.address)
+      this.$provider.getSigner()
     );
 
     this.getVoter().then(() => {

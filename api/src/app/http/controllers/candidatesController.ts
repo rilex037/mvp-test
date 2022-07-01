@@ -20,4 +20,5 @@ class CandidatesController {
     res.json({ candidates: candidates });
   }
 }
+
 export default CandidatesController;

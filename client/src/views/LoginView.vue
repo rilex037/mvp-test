@@ -22,10 +22,11 @@ export default {
     return {
       ethAddress: "",
       errors: [],
+      provider: null,
     };
   },
   mounted() {
- 
+    this.connectMetamask();
   },
   methods: {
     register(e) {
@@ -45,9 +46,22 @@ export default {
       }
 
       if (this.errors.length == 0) {
-        this.cookies.set("address", this.ethAddress);
         this.$router.push({ name: "vote" });
       }
+    },
+
+    async connectMetamask() {
+      this.provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+
+      await this.provider.send("eth_requestAccounts", []);
+
+      // console.log(await this.provider.getSigner().getAddress());
+      this.$store.commit("setProvider", this.provider);
+      this.ethAddress = await this.provider.getSigner().getAddress();
+
+      //console.log(store.state.provider);
+
+      //  app.config.globalProperties.$provider = provider;
     },
   },
 };

@@ -25,4 +25,5 @@ class VotesController {
     res.json({ candidates: votes });
   }
 }
+
 export default VotesController;

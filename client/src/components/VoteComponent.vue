@@ -93,6 +93,9 @@ export default {
         );
         let receipt = await tx.wait();
         if (receipt.status) {
+          console.log(receipt, tx);
+          console.log(this.voter);
+          /*
           // Cast a vote
           try {
             let tx = await this.voteControllerContract.vote(
@@ -108,6 +111,7 @@ export default {
           } catch (error) {
             alert(error.reason);
           }
+          */
         }
       } catch (error) {
         alert(error.reason ? error.reason : error);
