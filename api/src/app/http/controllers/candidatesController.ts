@@ -1,15 +1,11 @@
 import { Request, Response } from "express";
 import Cult from "../../models/cult";
-import Candidates from "../../models/candidates";
+import Candidate from "../../models/candidate";
 import { Sequelize } from "sequelize-typescript";
 
-class CandidatesList {
-  public static async index(req: Request, res: Response) {
-    res.json({ clans: await Cult.findAll() });
-  }
-
+class CandidatesController {
   public static async list(req: Request, res: Response) {
-    let candidates = await Candidates.findAll({
+    let candidates = await Candidate.findAll({
       raw: true,
       attributes: ["name", "age", [Sequelize.col("cult.name"), "cult"]],
       include: [
@@ -24,4 +20,4 @@ class CandidatesList {
     res.json({ candidates: candidates });
   }
 }
-export default CandidatesList;
+export default CandidatesController;

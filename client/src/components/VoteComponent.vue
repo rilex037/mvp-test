@@ -29,12 +29,12 @@
   <a href="#" @click="showLeads()">{{
     leadsHidden ? "Show Leads" : "Hide Leads"
   }}</a>
-
-  <div v-if="!leadsHidden">
+  <div class="leads" v-if="!leadsHidden">
     <p v-for="(l, k) in leads">
-      {{ l == 0 ? "Nobody" : candidates[l - 1].name }}
+      {{ l == 0 ? "" : k + 1 + ": " + candidates[l - 1].name }}
     </p>
   </div>
+  <textarea v-if="debug" rows="4" v-model="debugContent" disabled> </textarea>
 </template>
 
 <script>
@@ -43,11 +43,13 @@ import { ethers } from "ethers";
 export default {
   data() {
     return {
-      tokensToSpend: 1,
+      tokensToSpend: null,
       picked: null,
       candidates: {},
       leads: [0, 0, 0],
       leadsHidden: true,
+      debug: false,
+      debugContent: "debug...",
     };
   },
   props: ["voteControllerContract", "wakandaTokenContract", "voter"],
@@ -62,7 +64,7 @@ export default {
   },
   methods: {
     getCandidates() {
-      fetch(import.meta.env.VITE_APIURL + "/v1/candidates-list")
+      fetch(import.meta.env.VITE_APIURL + "/v1/candidates")
         .catch((response) => {
           alert("Error getting list of candidates!: " + response);
         })
@@ -76,6 +78,10 @@ export default {
       e.preventDefault();
       if (!this.picked) {
         alert("Please, pick a candidate to cast a vote!");
+        return;
+      }
+      if (this.tokensToSpend < 1) {
+        alert("You need to put at least one token to cast a vote!");
         return;
       }
 
@@ -96,16 +102,18 @@ export default {
             let receipt = await tx.wait();
             if (receipt.status) {
               alert("You voted for: " + this.candidates[this.picked - 1].name);
-              console.log(receipt);
+              this.getLeads();
+              console.log(receipt.transactionHash);
             }
           } catch (error) {
             alert(error.reason);
           }
         }
       } catch (error) {
-        alert(error.reason);
+        alert(error.reason ? error.reason : error);
       }
     },
+
     async getLeads() {
       await this.voteControllerContract.winningCandidates().then(
         async (result) => {

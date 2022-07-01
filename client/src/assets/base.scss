@@ -40,7 +40,16 @@ body {
       border: 1px solid #a9a9a9;
     }
   }
-
+  textarea {
+    position: fixed;
+    background: rgb(0 0 0 / 96%);
+    width: 100%;
+    resize: none;
+    bottom: 0px;
+    color: yellow;
+    left: 0;
+    border: none;
+  }
   button {
     border: none;
     background: #673ab7;
@@ -86,5 +95,12 @@ body {
   .error {
     color: red;
     display: block;
+  }
+  .leads {
+    background: #d3d3d3;
+    padding: 1pc;
+    color: black;
+    text-align: left;
+    border-radius: 0.7pc;
   }
 }

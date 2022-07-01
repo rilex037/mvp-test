@@ -4,4 +4,3 @@ CREATE TABLE mv.cults (
 	CONSTRAINT cults_pk PRIMARY KEY (id),
 	CONSTRAINT cults_un UNIQUE (name)
 );
- 
