@@ -10,13 +10,13 @@
 </template>
 
 <script>
-import { useCookies } from "vue3-cookies";
-import { ethers } from "ethers";
+import {useCookies} from "vue3-cookies";
+import {ethers} from "ethers";
 
 export default {
   setup() {
-    const { cookies } = useCookies();
-    return { cookies };
+    const {cookies} = useCookies();
+    return {cookies};
   },
   data() {
     return {
@@ -25,7 +25,7 @@ export default {
     };
   },
   mounted() {
- 
+    this.connectMetamask();
   },
   methods: {
     register(e) {
@@ -46,8 +46,15 @@ export default {
 
       if (this.errors.length == 0) {
         this.cookies.set("address", this.ethAddress);
-        this.$router.push({ name: "vote" });
+        this.$router.push({name: "vote"});
       }
+    },
+    async connectMetamask() {
+      /*
+      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      await provider.send("eth_requestAccounts", []);
+      this.ethAddress = await provider.getSigner().getAddress();
+      */
     },
   },
 };

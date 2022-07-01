@@ -12,7 +12,7 @@ export default {
   methods: {
     vote(e) {
       e.preventDefault();
-      this.$router.push({ name: "vote" });
+      this.$router.push({name: "vote"});
     },
   },
 };

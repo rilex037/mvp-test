@@ -3,11 +3,12 @@
     <span v-if="voter">
       <div v-if="!voter.registered">Registering your account...</div>
       <div v-if="voter.registered">
-        <VoteComponent 
-        :voteControllerContract="voteControllerContract"
-        :wakandaTokenContract="wakandaTokenContract"
-        :voter="voter"
-         />
+        <VoteComponent
+          :voteControllerContract="voteControllerContract"
+          :wakandaTokenContract="wakandaTokenContract"
+          :address="address"
+          :voter="voter"
+        />
       </div>
     </span>
     <span v-else>Connecting to the blockchain...</span>
@@ -21,18 +22,18 @@
 <script>
 import VoteComponent from "../components/VoteComponent.vue";
 
-import { useCookies } from "vue3-cookies";
-import { ethers } from "ethers";
-import { VoteControllerABI } from "../ethers/abi/VoteControllerABI";
-import { WakandaTokenABI } from "../ethers/abi/WakandaTokenABI";
+import {useCookies} from "vue3-cookies";
+import {ethers} from "ethers";
+import {VoteControllerABI} from "../ethers/abi/VoteControllerABI";
+import {WakandaTokenABI} from "../ethers/abi/WakandaTokenABI";
 
 export default {
   components: {
     VoteComponent,
   },
   setup() {
-    const { cookies } = useCookies();
-    return { cookies };
+    const {cookies} = useCookies();
+    return {cookies};
   },
   data() {
     return {
@@ -81,7 +82,7 @@ export default {
     logOut(e) {
       e.preventDefault();
       this.cookies.remove("address");
-      this.$router.push({ name: "home" });
+      this.$router.push({name: "home"});
     },
   },
 };
