@@ -1,11 +1,12 @@
 var cron = require("node-cron");
+import AddVotes from "./commands/addVotes";
 
 const runSchedules = () => {
   cron
-    .schedule("*/1 * * * * *", () => {
-      console.log("will execute every second");
+    .schedule("*/15 * * * * *", () => {
+      AddVotes();
     })
-    .stop();
+    .start();
 };
 
 export default runSchedules;

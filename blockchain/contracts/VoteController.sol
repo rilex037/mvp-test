@@ -26,6 +26,7 @@ contract VoteController {
     uint[] private wkArray = [0, 0, 0];
 
     event NewChallenger(uint indexed candidateId);
+    event NewVote(uint indexed candidateId, address sender, uint votes);
 
     constructor(address wakandaToken) {
         wakandaTokenAddress = wakandaToken;
@@ -63,6 +64,7 @@ contract VoteController {
         WakandaToken(wakandaTokenAddress).transferFrom(address(msg.sender), address(this), formatToken(tokens));
         candidates[candidateId].voteCount += tokens;
         voter[msg.sender].voted = true;
+        emit NewVote(candidateId, address(msg.sender), tokens);
         calculcatewkArray(candidateId);
     }
 
