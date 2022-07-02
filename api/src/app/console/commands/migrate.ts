@@ -2,7 +2,7 @@ import db from "../../../config/db";
 import fs from "fs";
 import path from "path";
 
-const migrate = async () => {
+const Migrate = async () => {
   console.log("running migration...");
   const dir = path.resolve("./") + "/src/database";
 
@@ -28,4 +28,4 @@ const migrate = async () => {
   });
 };
 
-export default migrate;
+export default Migrate;

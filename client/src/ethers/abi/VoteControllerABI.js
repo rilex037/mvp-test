@@ -25,6 +25,31 @@ export const VoteControllerABI = () => {
             type: "event",
         },
         {
+            anonymous: false,
+            inputs: [
+                {
+                    indexed: true,
+                    internalType: "uint256",
+                    name: "candidateId",
+                    type: "uint256",
+                },
+                {
+                    indexed: false,
+                    internalType: "address",
+                    name: "sender",
+                    type: "address",
+                },
+                {
+                    indexed: false,
+                    internalType: "uint256",
+                    name: "votes",
+                    type: "uint256",
+                },
+            ],
+            name: "NewVote",
+            type: "event",
+        },
+        {
             inputs: [],
             name: "award",
             outputs: [],

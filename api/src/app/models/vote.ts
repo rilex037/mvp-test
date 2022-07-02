@@ -17,7 +17,7 @@ import Candidate from "./candidate";
 class Vote extends Model {
   @PrimaryKey
   @Column
-  id: number;
+  block_id: number;
 
   @Column
   user_address: string;
