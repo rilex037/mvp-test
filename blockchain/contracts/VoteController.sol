@@ -1,17 +1,23 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.7;
 
 import "./WakandaToken.sol";
 
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 contract VoteController {
     address private wakandaTokenAddress;
 
+    struct CandidateDetail {
+        string name;
+        uint age;
+        string cult;
+    }
+
     struct Candidate {
         uint id;
-        string name;
         uint voteCount;
+        CandidateDetail details;
     }
 
     struct Voter {
@@ -21,6 +27,7 @@ contract VoteController {
 
     mapping(address => Voter) public voter;
 
+    CandidateDetail[] public candidateDetails;
     Candidate[] public candidates;
 
     uint[] private wkArray = [0, 0, 0];
@@ -28,19 +35,12 @@ contract VoteController {
     event NewChallenger(uint indexed candidateId);
     event NewVote(uint indexed candidateId, address sender, uint votes);
 
-    constructor(address wakandaToken) {
+    constructor(address wakandaToken, CandidateDetail[] memory candidatesArray) {
         wakandaTokenAddress = wakandaToken;
-        addCandidates(0, "");
-        addCandidates(1, "Oneza Umbadi");
-        addCandidates(2, "K'Tashe Khotare");
-        addCandidates(3, "W'Kasse Zomvu");
-        addCandidates(4, "Amwea Thembunu");
-        addCandidates(5, "Ch'Tahni Chite");
-        addCandidates(6, "Mbosha Tabi");
-        addCandidates(7, "Kwantak Buzakhi");
-        addCandidates(8, "Omeru Khibanda");
-        addCandidates(9, "Iwi Tamva");
-        addCandidates(10, "Jodi Tazediba");
+
+        for (uint i = 0; i < candidatesArray.length; i++) {
+            candidates.push(Candidate(i + 1, 0, candidatesArray[i]));
+        }
     }
 
     function award() external {
@@ -66,6 +66,10 @@ contract VoteController {
         voter[msg.sender].voted = true;
         emit NewVote(candidateId, address(msg.sender), tokens);
         calculcatewkArray(candidateId);
+    }
+
+    function getCandidates() public view returns (Candidate[] memory) {
+        return candidates;
     }
 
     function winningCandidates() public view returns (uint[] memory) {
@@ -118,9 +122,5 @@ contract VoteController {
 
     function formatToken(uint256 number) private pure returns (uint256) {
         return number * (10**18);
-    }
-
-    function addCandidates(uint id, string memory name) private {
-        candidates.push(Candidate(id, name, 0));
     }
 }

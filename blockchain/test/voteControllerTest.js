@@ -2,8 +2,9 @@ const {expect} = require("chai");
 const {ethers} = require("hardhat");
 
 const {getDeployAddresses} = require("../scripts/helpers/getDeployAddresses.js");
+const candidates = require("../scripts/helpers/getCandidates.js");
 
-describe("Tests For the VoteController", function () {
+describe("Tests For the VoteController", async function () {
     let voteController, wakandaToken;
     let addrs;
     let deployAddresses;
@@ -18,7 +19,16 @@ describe("Tests For the VoteController", function () {
 
         // Deploy VoteController
         const VoteController = await ethers.getContractFactory("VoteController");
-        voteController = await VoteController.deploy(deployAddresses.wakandaToken);
+        voteController = await VoteController.deploy(deployAddresses.wakandaToken, await candidates.getCandidates());
+    });
+
+    /**
+     * Candidates
+     */
+    it("Should check if VoteController has 10 candidates", async function () {
+        await voteController.getCandidates().then(function (response) {
+            expect(response.length).to.equal(10);
+        });
     });
 
     /**
