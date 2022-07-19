@@ -1,28 +1,37 @@
 import { Request, Response } from "express";
-import Candidate from "../../models/candidate";
-import { Sequelize } from "sequelize-typescript";
-import Vote from "../../models/vote";
+import { ethers } from "ethers";
+import Config from "../../../config/config";
+
+import { VoteControllerABI } from "../../../config/abi/VoteControllerABI";
+
+interface Candidate {
+  name: string;
+  age: number;
+  cult: string;
+  votes: number;
+}
 
 class VotesController {
-  public static async list(req: Request, res: Response) {
-    let votes = await Vote.findAll({
-      raw: true,
-      subQuery: false,
-      attributes: [
-        [Sequelize.col("candidate.name"), "candidate"],
-        [Sequelize.fn("sum", Sequelize.col("votes.token_amount")), "votes"],
-      ],
-      include: [
-        {
-          model: Candidate,
-          attributes: [],
-        },
-      ],
-      group: ["votes.candidate_id", "candidate.name"],
-      order: Sequelize.literal('"votes" DESC'),
+  public static async index(req: Request, res: Response) {
+    const provider = new ethers.providers.JsonRpcProvider(Config.INFURA);
+    let contract = new ethers.Contract(
+      String(Config.VOTE_CONTROLLER_ADDRESS),
+      VoteControllerABI(),
+      provider.getSigner(Config.ADDRESS)
+    );
+    let contractData = await contract.getCandidates();
+    let candidates: Candidate[] = [];
+
+    contractData.forEach((el: any) => {
+      candidates.push({
+        name: el.details.name,
+        age: el.details.age.toNumber(),
+        cult: el.details.cult,
+        votes: el.voteCount.toNumber(),
+      });
     });
 
-    res.json({ candidates: votes });
+    res.json({ candidates: candidates.sort((a, b) => b.votes - a.votes) });
   }
 }
 

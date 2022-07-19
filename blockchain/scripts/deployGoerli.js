@@ -3,8 +3,10 @@ const {getDeployAddresses} = require("../scripts/helpers/getDeployAddresses.js")
 const candidates = require("../scripts/helpers/getCandidates.js");
 
 async function main() {
-    const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545/");
-    const owner = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider);
+    const provider = new ethers.providers.JsonRpcProvider(
+        "https://goerli.infura.io/v3/e7a8b10fb7394e128c97723db70ed5f9"
+    );
+    const owner = new ethers.Wallet(P_KEY, provider);
     deployAddresses = await getDeployAddresses(owner);
 
     // Deploy WakandaToken

@@ -6,33 +6,38 @@
       <th>AGE</th>
       <th>CULT</th>
       <tr v-for="(c, k) in candidates">
-        <td><input type="radio" v-model="picked" :value="k + 1" /></td>
+        <td><input type="radio" v-model="picked" :value="k" /></td>
         <td>{{ c.name }}</td>
         <td>{{ c.age }}</td>
         <td>{{ c.cult }}</td>
       </tr>
     </table>
-    <span v-if="picked">Vote For: {{ candidates[picked - 1].name }}</span>
+    <span v-if="picked">Vote For: {{ candidates[picked].name }}</span>
 
     <form @submit="vote">
       <input min="1" type="number" placeholder="Enter ammount of WKND tokens to spend..." v-model="tokensToSpend" />
       <button type="submit">VOTE</button>
     </form>
   </div>
-  <h2 v-else>You Already Voted!</h2>
+  <div v-else>
+    <h2>You Already Voted!</h2>
+    <rankings-component></rankings-component>
+  </div>
 
   <a href="#" @click="showLeads()">{{ leadsHidden ? "Show Leads" : "Hide Leads" }}</a>
   <div class="leads" v-if="!leadsHidden">
     <p v-for="(l, k) in leads">
-      {{ l == 0 ? "" : k + 1 + ": " + candidates[l - 1].name }}
+      {{ k + 1 + ": " + candidates[l].name }}
     </p>
   </div>
 </template>
 
 <script>
 import {ethers} from "ethers";
+import RankingsComponent from "./RankingsComponent.vue";
 
 export default {
+  components: {RankingsComponent},
   data() {
     return {
       tokensToSpend: 1,
@@ -54,7 +59,7 @@ export default {
   },
   methods: {
     getCandidates() {
-      fetch(import.meta.env.VITE_APIURL + "/v1/candidates")
+      fetch(import.meta.env.VITE_CANDIDATES_URL)
         .catch((response) => {
           alert("Error getting list of candidates!: " + response);
         })
@@ -66,7 +71,7 @@ export default {
     },
     async vote(e) {
       e.preventDefault();
-      if (!this.picked) {
+      if (!this.picked == null) {
         alert("Please, pick a candidate to cast a vote!");
         return;
       }
@@ -88,7 +93,7 @@ export default {
             let tx = await this.voteControllerContract.vote(this.picked, this.tokensToSpend);
             let receipt = await tx.wait();
             if (receipt.status) {
-              alert("You voted for: " + this.candidates[this.picked - 1].name);
+              alert("You voted for: " + this.candidates[this.picked].name);
               this.getLeads();
               console.log(receipt.transactionHash);
             }

@@ -1,12 +1,9 @@
-import {useCookies} from "vue3-cookies";
-import {ethers} from "ethers";
-
-const {cookies} = useCookies();
+import {useUserStore} from "@/stores/user";
 
 export default ({to, from, next}) => {
-    let address = cookies.get("address");
+    const user = useUserStore();
 
-    if (address && ethers.utils.isAddress(address)) {
+    if (user.provider) {
         next();
     } else {
         next("/login");
