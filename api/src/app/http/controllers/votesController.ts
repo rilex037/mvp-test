@@ -13,7 +13,7 @@ interface Candidate {
 
 class VotesController {
   public static async index(req: Request, res: Response) {
-    const provider = new ethers.providers.JsonRpcProvider(Config.INFURA);
+    const provider = new ethers.providers.JsonRpcProvider(Config.INFURA_URL);
     let contract = new ethers.Contract(
       String(Config.VOTE_CONTROLLER_ADDRESS),
       VoteControllerABI(),

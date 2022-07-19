@@ -6,7 +6,7 @@ async function main() {
     const provider = new ethers.providers.JsonRpcProvider(
         "https://goerli.infura.io/v3/e7a8b10fb7394e128c97723db70ed5f9"
     );
-    const owner = new ethers.Wallet(P_KEY, provider);
+    const owner = new ethers.Wallet(PR_KEY, provider);
     deployAddresses = await getDeployAddresses(owner);
 
     // Deploy WakandaToken
