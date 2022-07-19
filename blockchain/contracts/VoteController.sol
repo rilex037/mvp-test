@@ -27,7 +27,6 @@ contract VoteController {
 
     mapping(address => Voter) public voter;
 
-    CandidateDetail[] public candidateDetails;
     Candidate[] public candidates;
 
     uint[] private wkArray = [0, 0, 0];
