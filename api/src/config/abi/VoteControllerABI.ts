@@ -7,6 +7,28 @@ export const VoteControllerABI = () => {
           name: "wakandaToken",
           type: "address",
         },
+        {
+          components: [
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "age",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "cult",
+              type: "string",
+            },
+          ],
+          internalType: "struct VoteController.CandidateDetail[]",
+          name: "candidatesArray",
+          type: "tuple[]",
+        },
       ],
       stateMutability: "nonpayable",
       type: "constructor",
@@ -22,31 +44,6 @@ export const VoteControllerABI = () => {
         },
       ],
       name: "NewChallenger",
-      type: "event",
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          internalType: "uint256",
-          name: "candidateId",
-          type: "uint256",
-        },
-        {
-          indexed: false,
-          internalType: "address",
-          name: "sender",
-          type: "address",
-        },
-        {
-          indexed: false,
-          internalType: "uint256",
-          name: "votes",
-          type: "uint256",
-        },
-      ],
-      name: "NewVote",
       type: "event",
     },
     {
@@ -72,14 +69,78 @@ export const VoteControllerABI = () => {
           type: "uint256",
         },
         {
-          internalType: "string",
-          name: "name",
-          type: "string",
-        },
-        {
           internalType: "uint256",
           name: "voteCount",
           type: "uint256",
+        },
+        {
+          components: [
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "age",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "cult",
+              type: "string",
+            },
+          ],
+          internalType: "struct VoteController.CandidateDetail",
+          name: "details",
+          type: "tuple",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "getCandidates",
+      outputs: [
+        {
+          components: [
+            {
+              internalType: "uint256",
+              name: "id",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "voteCount",
+              type: "uint256",
+            },
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "age",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "cult",
+                  type: "string",
+                },
+              ],
+              internalType: "struct VoteController.CandidateDetail",
+              name: "details",
+              type: "tuple",
+            },
+          ],
+          internalType: "struct VoteController.Candidate[]",
+          name: "",
+          type: "tuple[]",
         },
       ],
       stateMutability: "view",

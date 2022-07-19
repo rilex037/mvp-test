@@ -2,59 +2,52 @@
   <div class="block">
     <form @submit="register">
       <label>Account Address:</label>
-      <input v-model="ethAddress" name="ethAddress" type="text" />
-      <span class="error">{{ errors.ethAddress }}</span>
-      <button type="submit">REGISTER</button>
+      <input v-model="ethAddress" name="ethAddress" type="text" disabled />
+      <button type="submit">{{ btn }}</button>
     </form>
   </div>
 </template>
 
 <script>
-import {useCookies} from "vue3-cookies";
 import {ethers} from "ethers";
+import {useUserStore} from "@/stores/user";
 
 export default {
   setup() {
-    const {cookies} = useCookies();
-    return {cookies};
+    const user = useUserStore();
+
+    return {
+      user,
+    };
   },
   data() {
     return {
-      ethAddress: "",
+      ethAddress: "Please connect with Metamask...",
+      btn: "REGISTER",
       errors: [],
     };
   },
   mounted() {
     this.connectMetamask();
+    console.log(this.user.provider);
   },
   methods: {
     register(e) {
       e.preventDefault();
-      this.errors = [];
-
-      if (!this.ethAddress) {
-        return (this.errors = {
-          ethAddress: "'Account  Address' field is required.",
-        });
-      }
-
-      if (!ethers.utils.isAddress(this.ethAddress)) {
-        return (this.errors = {
-          ethAddress: "Invalid 'Account  Address'.",
-        });
-      }
-
-      if (this.errors.length == 0) {
-        this.cookies.set("address", this.ethAddress);
+      if (!this.user.provider) {
+        this.connectMetamask();
+      } else {
         this.$router.push({name: "vote"});
       }
     },
     async connectMetamask() {
-      /*
       const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-      await provider.send("eth_requestAccounts", []);
+      await provider.send("eth_requestAccounts", []).catch((e) => {
+        alert("Error while connecting to the MetaMask, reason: " + e.message);
+      });
+      this.user.storeProvider(provider);
       this.ethAddress = await provider.getSigner().getAddress();
-      */
+      this.btn = "CONTINUE..";
     },
   },
 };
