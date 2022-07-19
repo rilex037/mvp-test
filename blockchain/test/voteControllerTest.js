@@ -2,8 +2,9 @@ const {expect} = require("chai");
 const {ethers} = require("hardhat");
 
 const {getDeployAddresses} = require("../scripts/helpers/getDeployAddresses.js");
+const candidates = require("../scripts/helpers/getCandidates.js");
 
-describe("Tests For the VoteController", function () {
+describe("Tests For the VoteController", async function () {
     let voteController, wakandaToken;
     let addrs;
     let deployAddresses;
@@ -18,7 +19,7 @@ describe("Tests For the VoteController", function () {
 
         // Deploy VoteController
         const VoteController = await ethers.getContractFactory("VoteController");
-        voteController = await VoteController.deploy(deployAddresses.wakandaToken);
+        voteController = await VoteController.deploy(deployAddresses.wakandaToken, await candidates.getCandidates());
     });
 
     /**
@@ -55,7 +56,7 @@ describe("Tests For the VoteController", function () {
         await expect(voteController.connect(addrs[15]).vote(1, 1)).to.be.revertedWith("User is not registered!");
     });
     it("Should give error if user already voted", async function () {
-        await voteController.connect(addrs[0]).vote(1, 1);
+        await voteController.connect(addrs[0]).vote(0, 1);
         await expect(voteController.connect(addrs[0]).vote(1, 2)).to.be.revertedWith("User already voted!");
     });
     it("Should give error if user has no token balance", async function () {
@@ -65,16 +66,26 @@ describe("Tests For the VoteController", function () {
         await expect(voteController.connect(addrs[1]).vote(1, 2)).to.be.revertedWith("Insufficient balance of tokens");
     });
     it("Should vote for a third candidate", async function () {
-        await voteController.connect(addrs[2]).vote(3, 1);
-        candidate = await voteController.candidates(3);
+        await voteController.connect(addrs[2]).vote(2, 1);
+        candidate = await voteController.candidates(2);
         expect(candidate.voteCount).to.equal(1);
     });
     it("Should emit wining candidates event, with candidate 5 as leader", async function () {
-        await expect(voteController.connect(addrs[4]).vote(5, 1)).to.emit(voteController, "NewChallenger").withArgs(5);
+        await expect(voteController.connect(addrs[4]).vote(4, 1)).to.emit(voteController, "NewChallenger").withArgs(4);
     });
     it("Should see the id's of the top 3 winning candidates", async function () {
         await voteController.winningCandidates().then(function (response) {
-            expect(response.toString(2)).to.equal("5,3,1");
+            expect(response.toString(2)).to.equal("4,2,0");
+        });
+    });
+
+    /**
+     * Candidates
+     */
+    it("Should check if VoteController has 10 candidates", async function () {
+        await voteController.getCandidates().then(function (response) {
+            // console.log(response.toString());
+            expect(response.length).to.equal(10);
         });
     });
 });

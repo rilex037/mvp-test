@@ -22,18 +22,21 @@
 <script>
 import VoteComponent from "../components/VoteComponent.vue";
 
-import {useCookies} from "vue3-cookies";
 import {ethers} from "ethers";
 import {VoteControllerABI} from "../ethers/abi/VoteControllerABI";
 import {WakandaTokenABI} from "../ethers/abi/WakandaTokenABI";
+import {useUserStore} from "@/stores/user";
 
 export default {
   components: {
     VoteComponent,
   },
   setup() {
-    const {cookies} = useCookies();
-    return {cookies};
+    const user = useUserStore();
+
+    return {
+      user,
+    };
   },
   data() {
     return {
@@ -44,19 +47,19 @@ export default {
     };
   },
 
-  mounted() {
-    this.address = this.cookies.get("address");
+  async mounted() {
+    this.address = await this.user.provider.getSigner().getAddress();
 
     this.voteControllerContract = new ethers.Contract(
       import.meta.env.VITE_VOTE_CONTROLLER_ADDRESS,
       VoteControllerABI(),
-      this.$provider.getSigner(this.address)
+      this.user.provider.getSigner(0)
     );
 
     this.wakandaTokenContract = new ethers.Contract(
       import.meta.env.VITE_WAKANDA_TOKEN_ADDRESS,
       WakandaTokenABI(),
-      this.$provider.getSigner(this.address)
+      this.user.provider.getSigner()
     );
 
     this.getVoter().then(() => {
@@ -70,19 +73,17 @@ export default {
       this.voter = await this.voteControllerContract.voter(this.address);
     },
     async register() {
-      await this.voteControllerContract.award().then(
-        async (result) => {
-          this.voter = await this.voteControllerContract.voter(this.address);
-        },
-        (error) => {
-          alert(JSON.parse(error.body).error.message);
-        }
-      );
+      try {
+        let tx = await this.voteControllerContract.award();
+        let receipt = await tx.wait();
+        this.voter = await this.voteControllerContract.voter(this.address);
+      } catch (error) {
+        console.log(error);
+      }
     },
     logOut(e) {
       e.preventDefault();
-      this.cookies.remove("address");
-      this.$router.push({name: "home"});
+      window.location.replace("/");
     },
   },
 };

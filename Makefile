@@ -8,7 +8,6 @@ dockerize:
 	$(NODE_CONTAINER) "cd blockchain && npm install"
 	$(NODE_CONTAINER) "cd client && npm install"
 	$(NODE_CONTAINER) "cd api && npm install"
-	$(NODE_CONTAINER) "cd api && npm run command migrate_seed"
 
 start-containers:
 	docker-compose down
@@ -21,6 +20,9 @@ run-network:
 
 deploy:
 	$(NODE_CONTAINER) "cd blockchain && npx hardhat run scripts/deploy.js --network localhost"
+
+deploy-goerli:
+	$(NODE_CONTAINER) "cd blockchain && npx hardhat run scripts/deployGoerli.js --network goerli"
 
 test:
 	clear && $(NODE_CONTAINER) "cd blockchain && npx hardhat test"
